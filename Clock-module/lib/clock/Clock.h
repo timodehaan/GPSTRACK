@@ -7,6 +7,8 @@ class Clock
 {
 private:
     int adress; // the I2C adress to the DS3231(rtc-module)
+    String dayNames[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saterday"};
+    // byte temp; // used for temporary stuff
     // funtions
     byte decToBcd(byte val);
     byte bcdToDec(byte val);
@@ -18,7 +20,16 @@ public:
     void setDS3231time(byte second, byte minute, byte hour, byte dayOfWeek, byte dayOfMonth, byte month, byte year);
     void readDS3231time(byte *second, byte *minute, byte *hour, byte *dayOfWeek, byte *dayOfMonth, byte *month, byte *year);
     void displayTime();
-    // test
-    String getDay();
+    int getSec();
+    int getMin();
+    int getHour();
+    int getDay();
+    int getMonth();
+    int getYear();
+    int getDayOfWeek();
+    String getTime();
+    String getDate();
+    String getDateTime();
+    String getDayOfWeekSTR();
 };
 #endif

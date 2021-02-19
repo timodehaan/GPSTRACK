@@ -1,7 +1,7 @@
 #include "Clock.h"
 
 // the constructor
-Clock::Clock(int adress = 0x68)
+Clock::Clock(int adress)
 {
     this->adress = adress;
     Wire.begin();
@@ -75,28 +75,110 @@ void Clock::displayTime()
     Serial.print(year, DEC);
     Serial.print(" Day of week: ");
     // make array
-    switch (dayOfWeek)
-    {
-    case 1:
-        Serial.println("Sunday");
-        break;
-    case 2:
-        Serial.println("Monday");
-        break;
-    case 3:
-        Serial.println("Tuesday");
-        break;
-    case 4:
-        Serial.println("Wednesday");
-        break;
-    case 5:
-        Serial.println("Thursday");
-        break;
-    case 6:
-        Serial.println("Friday");
-        break;
-    case 7:
-        Serial.println("Saturday");
-        break;
-    }
+    Serial.println(dayNames[dayOfWeek]);
 }
+
+int Clock::getSec()
+{
+    byte sec, temp;
+    // retrieve data from DS3231
+    readDS3231time(&sec, &temp, &temp, &temp, &temp, &temp, &temp);
+    return sec;
+}
+int Clock::getMin()
+{
+    byte min, temp;
+    // retrieve data from DS3231
+    readDS3231time(&temp, &min, &temp, &temp, &temp, &temp, &temp);
+    return min;
+}
+int Clock::getHour()
+{
+    byte hour, temp;
+    // retrieve data from DS3231
+    readDS3231time(&temp, &temp, &hour, &temp, &temp, &temp, &temp);
+    return hour;
+}
+int Clock::getDay()
+{
+    byte day, temp;
+    // retrieve data from DS3231
+    readDS3231time(&temp, &temp, &temp, &temp, &day, &temp, &temp);
+    return day;
+}
+int Clock::getMonth()
+{
+    byte month, temp;
+    // retrieve data from DS3231
+    readDS3231time(&temp, &temp, &temp, &temp, &temp, &month, &temp);
+    return month;
+}
+int Clock::getYear()
+{
+    byte year, temp;
+    // retrieve data from DS3231
+    readDS3231time(&temp, &temp, &temp, &temp, &temp, &temp, &year);
+    return 2000 + year;
+}
+int Clock::getDayOfWeek()
+{
+    byte dayOfWeek, temp;
+    // retrieve data from DS3231
+    readDS3231time(&temp, &temp, &temp, &dayOfWeek, &temp, &temp, &temp);
+    return dayOfWeek;
+}
+String Clock::getTime()
+{
+    byte second, minute, hour, temp;
+    // retrieve data from DS3231
+    readDS3231time(&second, &minute, &hour, &temp, &temp, &temp, &temp);
+    // make time format "08:30"
+    String rtnTime = "";
+    if (hour < 10)
+    {
+        rtnTime += "0";
+    }
+    rtnTime += String(hour) + ":";
+    if (minute < 10)
+    {
+        rtnTime += "0";
+    }
+    rtnTime += String(minute);
+    return rtnTime;
+}
+String Clock::getDate()
+{
+    byte temp, day, month, year;
+    // retrieve data from DS3231
+    readDS3231time(&temp, &temp, &temp, &temp, &day, &month, &year);
+    // make date format 19/2/21
+    return String(day) + "/" + String(month) + "/" + String(year);
+}
+String Clock::getDateTime()
+{
+    byte second, minute, hour, dayOfWeek, day, month, year;
+    // retrieve data from DS3231
+    readDS3231time(&second, &minute, &hour, &dayOfWeek, &day, &month, &year);
+    // make time format "08:30 19/2/21"
+    String rtnTime = "";
+    if (hour < 10)
+    {
+        rtnTime += "0";
+    }
+    rtnTime += String(hour) + ":";
+    if (minute < 10)
+    {
+        rtnTime += "0";
+    }
+    rtnTime += String(day) + "/" + String(month) + "/" + String(year);
+    return rtnTime;
+}
+
+String Clock::getDayOfWeekSTR()
+{
+    byte dayOfWeek, temp;
+    // retrieve data from DS3231
+    readDS3231time(&temp, &temp, &temp, &dayOfWeek, &temp, &temp, &temp);
+    return dayNames[dayOfWeek];
+}
+
